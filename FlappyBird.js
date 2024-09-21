@@ -96,36 +96,40 @@ class FlappyBird {
         this.gameOver = false;
     }
 
-    update() {
-        if (!this.gameOver) {
-            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height); // Clear the canvas
-            
-            this.drawBackground(); // Draw the background
-            
-            this.bird.update();
-            this.bird.draw(this.context);
-    
-            this.pipes.forEach((pipe) => {
-                pipe.update(-4);
-                pipe.draw(this.context);
-                
-                // Collision detection
-                if (this.checkCollision(this.bird, pipe)) {
-                    this.gameOver = true;
-                }
-                
-                // Update score
-                if (!pipe.passed && this.bird.x > pipe.x + pipe.width) {
-                    this.score += 0.5; // Increment score
-                    pipe.passed = true;
-                }
-            });
-    
-            // Remove pipes that are out of bounds
-            this.pipes = this.pipes.filter(pipe => pipe.x + pipe.width > 0);
-            this.drawScore();
+update() {
+    if (!this.gameOver) {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height); // Clear the canvas
+        
+        this.bird.update();
+        this.bird.draw(this.context);
+
+        // Check if the bird has fallen below the canvas
+        if (this.bird.y + this.bird.height >= this.canvas.height) {
+            this.gameOver = true;
         }
+
+        this.pipes.forEach((pipe) => {
+            pipe.update(-4);
+            pipe.draw(this.context);
+            
+            // Collision detection
+            if (this.checkCollision(this.bird, pipe)) {
+                this.gameOver = true;
+            }
+            
+            // Update score
+            if (!pipe.passed && this.bird.x > pipe.x + pipe.width) {
+                this.score += 0.5; // Increment score
+                pipe.passed = true;
+            }
+        });
+
+        // Remove pipes that are out of bounds
+        this.pipes = this.pipes.filter(pipe => pipe.x + pipe.width > 0);
+        this.drawScore();
     }
+}
+
 
     checkCollision(bird, pipe) {
         return bird.x < pipe.x + pipe.width &&

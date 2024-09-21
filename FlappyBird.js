@@ -69,14 +69,16 @@ class FlappyBird {
     }
 
     handleKey(event) {
-        if (event.code === 'Space') {
-            if (this.gameOver) {
-                this.restart();
-            } else {
-                this.bird.velocityY = -9;
-            }
+    if (event.code === 'Space') {
+        if (this.gameOver) {
+            this.restart();
+        } else {
+            this.bird.velocityY = -9; // This should cause the bird to jump
+            console.log("Jump triggered"); // Add this line to check if the key is detected
         }
     }
+}
+
 
     restart() {
         this.bird.y = this.canvas.height / 2;

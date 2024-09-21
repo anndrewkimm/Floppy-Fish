@@ -6,7 +6,8 @@ class Bird {
         this.height = 24;
         this.img = image;
         this.velocityY = 0;
-        this.gravity = 1;
+        this.gravity = 0.5; // Lower gravity for a slower fall
+        this.jumpStrength = 8; // Increase jump strength
     }
 
     update() {
@@ -73,11 +74,11 @@ class FlappyBird {
         if (this.gameOver) {
             this.restart();
         } else {
-            this.bird.velocityY = -9; // This should cause the bird to jump
-            console.log("Jump triggered"); // Add this line to check if the key is detected
+            this.bird.velocityY = -this.bird.jumpStrength; // Use jumpStrength
         }
     }
 }
+
 
 
     restart() {

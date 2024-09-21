@@ -99,6 +99,8 @@ class FlappyBird {
 update() {
     if (!this.gameOver) {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height); // Clear the canvas
+
+        this.drawBackground();
         
         this.bird.update();
         this.bird.draw(this.context);

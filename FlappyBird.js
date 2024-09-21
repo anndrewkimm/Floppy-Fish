@@ -44,6 +44,11 @@ class FlappyBird {
     constructor() {
         this.canvas = document.getElementById('gameCanvas');
         this.context = this.canvas.getContext('2d');
+
+        // Load background image
+        this.backgroundImg = new Image();
+        this.backgroundImg.src = './flappybirdbg.png'; // Your background image
+
         this.birdImg = new Image();
         this.birdImg.src = './flappybird.png';
         this.topPipeImg = new Image();
@@ -62,6 +67,10 @@ class FlappyBird {
         window.addEventListener('keydown', (e) => this.handleKey(e));
     }
 
+    drawBackground() {
+        this.context.drawImage(this.backgroundImg, 0, 0, this.canvas.width, this.canvas.height);
+    }
+
     placePipes() {
         const openingSpace = 150; // Space between pipes
         const randomPipeY = Math.floor(Math.random() * (this.canvas.height - openingSpace - 150)) + 50; // Adjust limits as needed
@@ -70,16 +79,14 @@ class FlappyBird {
     }
 
     handleKey(event) {
-    if (event.code === 'Space') {
-        if (this.gameOver) {
-            this.restart();
-        } else {
-            this.bird.velocityY = -this.bird.jumpStrength; // Use jumpStrength
+        if (event.code === 'Space') {
+            if (this.gameOver) {
+                this.restart();
+            } else {
+                this.bird.velocityY = -this.bird.jumpStrength; // Use jumpStrength
+            }
         }
     }
-}
-
-
 
     restart() {
         this.bird.y = this.canvas.height / 2;
@@ -90,34 +97,35 @@ class FlappyBird {
     }
 
     update() {
-    if (!this.gameOver) {
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height); // Clear the canvas
-        
-        this.bird.update();
-        this.bird.draw(this.context);
-
-        this.pipes.forEach((pipe) => {
-            pipe.update(-4);
-            pipe.draw(this.context);
+        if (!this.gameOver) {
+            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height); // Clear the canvas
             
-            // Collision detection
-            if (this.checkCollision(this.bird, pipe)) {
-                this.gameOver = true;
-            }
+            this.drawBackground(); // Draw the background
             
-            // Update score
-            if (!pipe.passed && this.bird.x > pipe.x + pipe.width) {
-                this.score += 0.5; // Increment score
-                pipe.passed = true;
-            }
-        });
-
-        // Remove pipes that are out of bounds
-        this.pipes = this.pipes.filter(pipe => pipe.x + pipe.width > 0);
-        this.drawScore();
+            this.bird.update();
+            this.bird.draw(this.context);
+    
+            this.pipes.forEach((pipe) => {
+                pipe.update(-4);
+                pipe.draw(this.context);
+                
+                // Collision detection
+                if (this.checkCollision(this.bird, pipe)) {
+                    this.gameOver = true;
+                }
+                
+                // Update score
+                if (!pipe.passed && this.bird.x > pipe.x + pipe.width) {
+                    this.score += 0.5; // Increment score
+                    pipe.passed = true;
+                }
+            });
+    
+            // Remove pipes that are out of bounds
+            this.pipes = this.pipes.filter(pipe => pipe.x + pipe.width > 0);
+            this.drawScore();
+        }
     }
-}
-
 
     checkCollision(bird, pipe) {
         return bird.x < pipe.x + pipe.width &&
